@@ -1,7 +1,8 @@
-[gd_scene load_steps=44 format=4 uid="uid://deaki4yumnjy6"]
+[gd_scene load_steps=45 format=4 uid="uid://deaki4yumnjy6"]
 
 [ext_resource type="Texture2D" uid="uid://iehyyh7pqbn6" path="res://Assets/TileSets/pixel 16 woods v2.0/!spring[main]/trees & stuff.png" id="2_csbud"]
 [ext_resource type="Texture2D" uid="uid://bf4xnmcvser75" path="res://Assets/TileSets/pixel 16 woods v2.0/summer/summer_tileset.png" id="2_d0cm5"]
+[ext_resource type="Texture2D" uid="uid://crtkccgfck1i8" path="res://Assets/TileSets/pixel 16 woods v2.0/!spring[main]/tilesetV2.png" id="2_e16jf"]
 [ext_resource type="Texture2D" uid="uid://datreh15she61" path="res://Assets/TileSets/Home Made Assets/TileSet1.png" id="2_f3xal"]
 [ext_resource type="Texture2D" uid="uid://cq1yg4guh38yg" path="res://Assets/TileSets/Home Made Assets/House.png" id="3_csbud"]
 [ext_resource type="Texture2D" uid="uid://dw5k5rxd6iqeg" path="res://Assets/TileSets/fishing_full/Tiles/tiles.png" id="3_ic5ia"]
@@ -496,7 +497,7 @@ texture = ExtResource("2_f3xal")
 23:28/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pb6dk"]
-texture = ExtResource("6_d0cm5")
+texture = ExtResource("2_e16jf")
 5:0/0 = 0
 6:0/0 = 0
 7:0/0 = 0
@@ -738,6 +739,10 @@ texture = ExtResource("6_d0cm5")
 2:17/0 = 0
 3:17/0 = 0
 4:17/0 = 0
+5:17/animation_columns = 3
+5:17/animation_frame_0/duration = 1.0
+5:17/animation_frame_1/duration = 1.0
+5:17/animation_frame_2/duration = 1.0
 5:17/0 = 0
 8:17/0 = 0
 9:17/0 = 0
@@ -5981,6 +5986,8 @@ shape = SubResource("RectangleShape2D_ic5ia")
 
 [node name="DockExit" type="Area2D" parent="."]
 script = ExtResource("10_pb6dk")
+target_scene_path = "res://Scenes/Areas/BeachArea.tscn"
+target_spawn_name = "SpawnStart"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DockExit"]
 position = Vector2(323, -8)
