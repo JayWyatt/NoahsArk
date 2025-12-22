@@ -1,4 +1,4 @@
-[gd_scene load_steps=43 format=4 uid="uid://deaki4yumnjy6"]
+[gd_scene load_steps=44 format=4 uid="uid://deaki4yumnjy6"]
 
 [ext_resource type="Texture2D" uid="uid://iehyyh7pqbn6" path="res://Assets/TileSets/pixel 16 woods v2.0/!spring[main]/trees & stuff.png" id="2_csbud"]
 [ext_resource type="Texture2D" uid="uid://bf4xnmcvser75" path="res://Assets/TileSets/pixel 16 woods v2.0/summer/summer_tileset.png" id="2_d0cm5"]
@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://dcs4hb826hlcu" path="res://Assets/TileSets/pixel 16 woods v2.0/!spring[main]/tileset.png" id="6_d0cm5"]
 [ext_resource type="Script" uid="uid://1ydq6hngbqq0" path="res://Scripts/Exits/Exits.gd" id="10_pb6dk"]
 [ext_resource type="Script" uid="uid://dis20uqw6dsyi" path="res://Scripts/Camera/CameraBounds.gd" id="11_e16jf"]
+[ext_resource type="Script" uid="uid://c223dphhm6648" path="res://Scripts/SpawnPoints/SpawnPoint.gd" id="11_xu5hv"]
 
 [sub_resource type="GDScript" id="GDScript_pb6dk"]
 
@@ -5275,9 +5276,11 @@ texture = ExtResource("4_d0cm5")
 7:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 1:2/0 = 0
 2:2/0 = 0
+2:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-3.057599, -2.877739, -3.021037, -4.063696, -2.9943023, -5.96187, -1.9783783, -6.042074, -1.9783783, -7.0312634, 2.0051131, -7.0847335, 2.0051131, -5.988605, 2.9943023, -5.9886045, 3.0210373, -3.9834912, 8, -3.943554, 8, 8, -3.2374573, 8)
 3:2/0 = 0
 3:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -4.063696, -3.021037, -4.063696, -2.9943023, -5.96187, -1.9783783, -6.042074, -1.9783783, -7.0312634, 2.0051131, -7.0847335, 2.0051131, -5.988605, 2.9943023, -5.9886045, 3.0210373, -3.9834912, 8, -3.943554, 8, 8, -8, 8)
 4:2/0 = 0
+4:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -4.063696, -3.021037, -4.063696, -2.9943023, -5.96187, -1.9783783, -6.042074, -1.9783783, -7.0312634, 2.0051131, -7.0847335, 2.0051131, -5.988605, 2.9943023, -5.9886045, 3.0210373, -3.9834912, 3.057598, -3.4173155, 3.057598, 8, -8, 8)
 5:2/0 = 0
 7:2/0 = 0
 8:2/0 = 0
@@ -5985,6 +5988,8 @@ shape = SubResource("RectangleShape2D_1n7vx")
 
 [node name="DoorExit" type="Area2D" parent="."]
 script = ExtResource("10_pb6dk")
+target_scene_path = "res://Scenes/Areas/Home.tscn"
+target_spawn_name = "SpawnStart"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DoorExit"]
 position = Vector2(-88, -38)
@@ -5993,5 +5998,7 @@ shape = SubResource("RectangleShape2D_pb6dk")
 [node name="CameraBounds" type="Node2D" parent="."]
 script = ExtResource("11_e16jf")
 
-[node name="SpawnStartingArea" type="Marker2D" parent="."]
+[node name="SpawnStart" type="Marker2D" parent="." groups=["spawn"]]
 position = Vector2(-88, -21)
+script = ExtResource("11_xu5hv")
+spawn_id = "SpawnHome"
