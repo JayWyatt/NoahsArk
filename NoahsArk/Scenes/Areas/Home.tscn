@@ -1,8 +1,7 @@
-[gd_scene load_steps=15 format=4 uid="uid://dvmiixnjbclps"]
+[gd_scene load_steps=14 format=4 uid="uid://dvmiixnjbclps"]
 
 [ext_resource type="Texture2D" uid="uid://cdbbqwxe0oi2q" path="res://Assets/TileSets/Home Made Assets/Exported/HouseInt.png" id="1_qk4ws"]
 [ext_resource type="Script" uid="uid://1ydq6hngbqq0" path="res://Scripts/Exits/Exits.gd" id="2_nc2ua"]
-[ext_resource type="Script" uid="uid://dis20uqw6dsyi" path="res://Scripts/Camera/CameraBounds.gd" id="3_vq36m"]
 [ext_resource type="Script" uid="uid://c223dphhm6648" path="res://Scripts/SpawnPoints/SpawnPoint.gd" id="4_tyggk"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_nc2ua"]
@@ -1336,19 +1335,21 @@ size = Vector2(16, 10.5)
 
 [node name="Home" type="Node2D"]
 
-[node name="Ground" type="TileMapLayer" parent="."]
+[node name="TileMapLayers" type="Node2D" parent="."]
+
+[node name="Ground" type="TileMapLayer" parent="TileMapLayers"]
 tile_map_data = PackedByteArray("AAD9/wIAAAAdAB4AAAD+/wIAAAAdAB4AAAD//wIAAAAdAB4AAAAAAAIAAAAdAB4AAAABAAIAAAAdAB4AAAACAAIAAAAdAB4AAAADAAIAAAAdAB4AAAD8/wIAAAAdAB4AAAD8/wMAAAAdAB4AAAD9/wMAAAAdAB4AAAD+/wMAAAAdAB4AAAD//wMAAAAdAB4AAAAAAAMAAAAdAB4AAAABAAMAAAAdAB4AAAACAAMAAAAdAB4AAAADAAMAAAAdAB4AAAD8/wQAAAAdAB4AAAD9/wQAAAAdAB4AAAD+/wQAAAAdAB4AAAD//wQAAAAdAB4AAAAAAAQAAAAdAB4AAAABAAQAAAAdAB4AAAACAAQAAAAdAB4AAAADAAQAAAAdAB4AAAD8/wUAAAAdAB4AAAD9/wUAAAAdAB4AAAD+/wUAAAAdAB4AAAD//wUAAAAdAB4AAAAAAAUAAAAdAB4AAAABAAUAAAAdAB4AAAACAAUAAAAdAB4AAAADAAUAAAAdAB4AAAD8/wYAAAAdAB4AAAD9/wYAAAAdAB4AAAD+/wYAAAAdAB4AAAD//wYAAAAdAB4AAAAAAAYAAAAdAB4AAAABAAYAAAAdAB4AAAACAAYAAAAdAB4AAAADAAYAAAAdAB4AAAAEAAIAAAAdAB4AAAAEAAMAAAAdAB4AAAAEAAQAAAAdAB4AAAAEAAUAAAAdAB4AAAAEAAYAAAAdAB4AAAAAAAcAAAAdAB4AAAAFAAAAAAATAB4AAAAFAAEAAAATAB4AAAAFAAIAAAATAB4AAAAFAAMAAAATAB4AAAAFAAQAAAATAB4AAAAFAAUAAAATAB4AAAAFAAYAAAATAB4AAAAFAAcAAAATAB8AAAAEAAcAAAASAB0AAAADAAcAAAASAB0AAAACAAcAAAASAB0AAAABAAcAAAASAB8AAAD//wcAAAASAB8AAAD+/wcAAAASAB8AAAD9/wcAAAASAB8AAAD8/wcAAAASAB8AAAD7/wcAAAARAB8AAAD7/wYAAAARAB4AAAD7/wUAAAARAB4AAAD7/wQAAAARAB4AAAD7/wMAAAARAB4AAAD7/wIAAAARAB4AAAD7/wEAAAARAB4AAAD7/wAAAAARAB4AAAABAAgAAAATAB8AAAD//wgAAAARAB8AAAAAAAgAAAAdAB4AAAD7//7/AAARAB0AAAAFAP7/AAATAB0AAAD8//7/AAASAB0AAAD9//7/AAASAB0AAAD+//7/AAASAB0AAAD///7/AAASAB0AAAAAAP7/AAASAB0AAAABAP7/AAASAB0AAAACAP7/AAASAB0AAAADAP7/AAASAB0AAAAEAP7/AAASAB0AAAAFAP//AAATAB4AAAD7////AAARAB4AAAA=")
 tile_set = SubResource("TileSet_vq36m")
 
-[node name="Air" type="TileMapLayer" parent="."]
+[node name="Air" type="TileMapLayer" parent="TileMapLayers"]
 z_index = 1
 tile_set = SubResource("TileSet_xc33l")
 
-[node name="GroundDecor" type="TileMapLayer" parent="."]
+[node name="GroundDecor" type="TileMapLayer" parent="TileMapLayers"]
 tile_map_data = PackedByteArray("AAD//wYAAAAAAAIAAAAAAAYAAAABAAIAAAABAAYAAAACAAIAAAD//wcAAAAAAAMAAAAAAAcAAAABAAMAAAABAAcAAAACAAMAAAA=")
 tile_set = SubResource("TileSet_nc2ua")
 
-[node name="Collision" type="TileMapLayer" parent="."]
+[node name="Collision" type="TileMapLayer" parent="TileMapLayers"]
 tile_map_data = PackedByteArray("AAD8/wAAAAAJAAsAAAD9/wAAAAAKAAsAAAD+/wAAAAALAAsAAAD//wAAAAAMAAsAAAAAAAAAAAANAAsAAAABAAAAAAAOAAsAAAACAAAAAAAVAB4AAAD8/wEAAAAJAAwAAAD9/wEAAAAKAAwAAAD+/wEAAAALAAwAAAD//wEAAAAMAAwAAAAAAAEAAAANAAwAAAABAAEAAAAOAAwAAAACAAEAAAAVAB8AAAAEAAAAAAAWAB4AAAAEAAEAAAAWAB8AAAADAAAAAAAVAB4AAAADAAEAAAAVAB8AAAAEAAIAAAABAAQAAAADAAMAAAABAAEAAAADAAIAAAABAAAAAAD8////AAAUAB0AAAD9////AAAVAB0AAAD+////AAAVAB0AAAD/////AAAVAB0AAAAAAP//AAAVAB0AAAABAP//AAAVAB0AAAACAP//AAAVAB0AAAADAP//AAAVAB0AAAAEAP//AAAWAB0AAAA=")
 tile_set = SubResource("TileSet_ukdna")
 
@@ -1361,10 +1362,12 @@ target_spawn_name = "SpawnHome"
 position = Vector2(8, 138.25)
 shape = SubResource("RectangleShape2D_vq36m")
 
-[node name="CameraBounds" type="Node2D" parent="."]
-script = ExtResource("3_vq36m")
-
 [node name="SpawnHome" type="Marker2D" parent="." groups=["spawn"]]
 position = Vector2(8, 116)
 script = ExtResource("4_tyggk")
 spawn_id = "SpawnStart"
+
+[node name="BedSpawn" type="Marker2D" parent="." groups=["spawn"]]
+position = Vector2(40, 48)
+script = ExtResource("4_tyggk")
+spawn_id = "BedSpawn"
