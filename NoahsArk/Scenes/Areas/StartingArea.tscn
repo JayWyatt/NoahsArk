@@ -5949,7 +5949,7 @@ sources/2 = SubResource("TileSetAtlasSource_ic5ia")
 sources/6 = SubResource("TileSetAtlasSource_ejlk6")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ic5ia"]
-size = Vector2(55, 36)
+size = Vector2(55, 20)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1n7vx"]
 size = Vector2(26, 36)
@@ -6021,42 +6021,49 @@ tile_set = SubResource("TileSet_d0cm5")
 
 [node name="Exits" type="Node2D" parent="."]
 
-[node name="Exit" type="Area2D" parent="Exits"]
+[node name="ToFarm" type="Area2D" parent="Exits"]
 script = ExtResource("10_pb6dk")
+target_scene_path = "res://Scenes/Areas/FarmArea.tscn"
+target_spawn_name = "FromStart"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Exits/Exit"]
-position = Vector2(106, -223)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Exits/ToFarm"]
+position = Vector2(106, -214)
 shape = SubResource("RectangleShape2D_ic5ia")
 
-[node name="DockExit" type="Area2D" parent="Exits"]
+[node name="ToBeach" type="Area2D" parent="Exits"]
 script = ExtResource("10_pb6dk")
 target_scene_path = "res://Scenes/Areas/BeachArea.tscn"
-target_spawn_name = "BeachSpawn"
+target_spawn_name = "FromStart"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Exits/DockExit"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Exits/ToBeach"]
 position = Vector2(296, -8)
 shape = SubResource("RectangleShape2D_1n7vx")
 
-[node name="DoorExit" type="Area2D" parent="Exits"]
+[node name="ToHouse" type="Area2D" parent="Exits"]
 script = ExtResource("10_pb6dk")
 target_scene_path = "res://Scenes/Areas/Home.tscn"
-target_spawn_name = "SpawnStart"
+target_spawn_name = "FromStart"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Exits/DoorExit"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Exits/ToHouse"]
 position = Vector2(-88, -38)
 shape = SubResource("RectangleShape2D_pb6dk")
 
 [node name="SpawnPoints" type="Node2D" parent="."]
 
-[node name="SpawnStart" type="Marker2D" parent="SpawnPoints" groups=["spawn"]]
+[node name="FromHouse" type="Marker2D" parent="SpawnPoints" groups=["spawn"]]
 position = Vector2(-88, -21)
 script = ExtResource("11_xu5hv")
-spawn_id = "SpawnHome"
+spawn_id = "FromHome"
 
-[node name="DockSpawn" type="Marker2D" parent="SpawnPoints" groups=["spawn"]]
+[node name="FromBeach" type="Marker2D" parent="SpawnPoints" groups=["spawn"]]
 position = Vector2(253, -8)
 script = ExtResource("11_xu5hv")
-spawn_id = "DockSpawn"
+spawn_id = "FromBeach"
+
+[node name="FromFarm" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(105, -181)
+script = ExtResource("11_xu5hv")
+spawn_id = "FromFarm"
 
 [node name="Items" type="Node2D" parent="."]
 position = Vector2(-88, 19)
