@@ -1,6 +1,9 @@
 extends Control
+class_name InventoryUI
 
 signal drop_item_to_world(item: InvItem, amount: int)
+signal inventory_opened
+signal inventory_closed
 
 @onready var inv: Inv = preload("res://Inventory/PlayerInventory.tres")
 @onready var slots: Array = []
@@ -14,8 +17,10 @@ func _ready() -> void:
 	slots.clear()
 	slots.append_array($TextureRect/GridContainer.get_children())
 	slots.append_array($TextureRect/GridContainer2.get_children())
+	add_to_group("inventory_ui")
 
-	# Assign indices to UI slots to match inv.slots
+	inv.inventory_changed.connect(update_slots)
+
 	for i in slots.size():
 		slots[i].index = i
 
@@ -48,15 +53,41 @@ func update_slots() -> void:
 
 		ui_slot.update(slot_data)
 
+		# Hotkey numbers only on first 10 slots (0–9)
+		if i == 0:
+			ui_slot.set_hotkey_text("1")
+		elif i == 1:
+			ui_slot.set_hotkey_text("2")
+		elif i == 2:
+			ui_slot.set_hotkey_text("3")
+		elif i == 3:
+			ui_slot.set_hotkey_text("4")
+		elif i == 4:
+			ui_slot.set_hotkey_text("5")
+		elif i == 5:
+			ui_slot.set_hotkey_text("6")
+		elif i == 6:
+			ui_slot.set_hotkey_text("7")
+		elif i == 7:
+			ui_slot.set_hotkey_text("8")
+		elif i == 8:
+			ui_slot.set_hotkey_text("9")
+		elif i == 9:
+			ui_slot.set_hotkey_text("0")
+		else:
+			ui_slot.set_hotkey_text("")
+
 func open():
 	visible = true
 	is_open = true
+	inventory_opened.emit()
 
 func close():
 	visible = false
 	is_open = false
 	picked_slot_index = -1
 	_stop_drag_icon()
+	inventory_closed.emit()
 
 func on_slot_clicked(slot_index: int) -> void:
 	if slot_index < 0 or slot_index >= inv.slots.size():
@@ -64,33 +95,52 @@ func on_slot_clicked(slot_index: int) -> void:
 
 	var clicked_slot: InvSlot = inv.slots[slot_index]
 
-	# No item in hand -> pick up
+	# ─────────────────────────────
+	# 1) NOTHING IN HAND → PICK UP
+	# ─────────────────────────────
 	if picked_slot_index == -1:
 		if clicked_slot == null or clicked_slot.item == null:
 			return
 
+		# START DRAG
 		picked_slot_index = slot_index
 		_start_drag_icon(clicked_slot)
-
-		# Hide original slot visuals ONCE
 		slots[picked_slot_index].set_item_visible(false)
-		return
+		return   # ⬅️ IMPORTANT: stops here, NO hotbar select
+	# --------------------------------
 
-	# Clicking the same slot -> cancel drag and show it again
+	# ─────────────────────────────
+	# 2) CLICK SAME SLOT → CANCEL
+	# ─────────────────────────────
 	if picked_slot_index == slot_index:
 		_stop_drag_icon()
 		slots[picked_slot_index].set_item_visible(true)
 		picked_slot_index = -1
-		return
+		return   # ⬅️ IMPORTANT: stops here, NO hotbar select
+	# --------------------------------
 
-	# Different slot -> swap
+	# ─────────────────────────────
+	# 3) DRAG → DROP / SWAP
+	# ─────────────────────────────
 	var held_slot: InvSlot = inv.slots[picked_slot_index]
 	inv.slots[picked_slot_index] = clicked_slot
 	inv.slots[slot_index] = held_slot
 
 	picked_slot_index = -1
 	_stop_drag_icon()
-	update_slots()
+	inv.notify_changed()
+
+	# ─────────────────────────────
+	# 4) AFTER A SUCCESSFUL CLICK
+	#    (NOT a drag start)
+	# ─────────────────────────────
+	if slot_index < 10:
+		var slot := inv.slots[slot_index]
+		if slot and slot.item and slot.amount > 0:
+			var player := get_tree().get_first_node_in_group("player")
+			if player:
+				player.select_hotbar_slot(slot_index)
+
 
 func _start_drag_icon(slot: InvSlot) -> void:
 	if slot == null or slot.item == null:
@@ -128,15 +178,24 @@ func drop_held_item_to_world() -> void:
 	# Reset drag state and UI
 	picked_slot_index = -1
 	_stop_drag_icon()
-	update_slots()
+	inv.notify_changed()
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not is_open:
-		return
+	# Mouse release logic should stay gated by is_open
+	if is_open:
+		if event is InputEventMouseButton \
+		and event.button_index == MOUSE_BUTTON_LEFT \
+		and event.is_pressed() == false:
+			if picked_slot_index != -1:
+				drop_held_item_to_world()
 
-	if event is InputEventMouseButton \
-	and event.button_index == MOUSE_BUTTON_LEFT \
-	and event.is_pressed() == false:
-		# Mouse released outside UI (slots didn’t handle it)
-		if picked_slot_index != -1:
-			drop_held_item_to_world()
+func set_active_hotbar(index: int) -> void:
+	_highlight_hotbar_slot(index)
+
+func _highlight_hotbar_slot(index: int) -> void:
+	for i in range(10):
+		if i < slots.size():
+			slots[i].set_hotkey_color(Color.WHITE)
+
+	if index >= 0 and index < slots.size() and index < 10:
+		slots[index].set_hotkey_color(Color.RED)
