@@ -5871,5 +5871,4 @@ tile_set = SubResource("TileSet_u6m32")
 [node name="HousesRoot" type="Node2D" parent="YSort"]
 
 [node name="House" parent="YSort/HousesRoot" instance=ExtResource("15_gsau2")]
-z_index = -1
 position = Vector2(-142.965, -25.685)
