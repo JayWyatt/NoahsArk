@@ -30,6 +30,11 @@ func _ready() -> void:
 	#door
 	sounds["door"] = load("res://Assets/SoundDesign/Arsha SFX Pack/Building/Door Sound.wav")
 
+	#WalkingGrass
+	sounds["walkgrass1"] = load("res://Assets/SoundDesign/Arsha SFX Pack/Walking/Grass1.wav")
+	sounds["walkgrass2"] = load("res://Assets/SoundDesign/Arsha SFX Pack/Walking/Grass2.wav")
+	sounds["walkgrass3"] = load("res://Assets/SoundDesign/Arsha SFX Pack/Walking/Grass3.wav")
+
 func play(sfx_id: String, volume_db := 0.0, pitch := 1.0) -> void:
 	if not sounds.has(sfx_id):
 		push_warning("SFX not found: " + sfx_id)
