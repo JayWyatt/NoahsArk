@@ -86,7 +86,7 @@ _data = {
 &"Stepped": SubResource("Animation_uaoap")
 }
 
-[node name="TallGrass" type="Node2D"]
+[node name="TallGrass" type="Node2D" groups=["tall_grass"]]
 y_sort_enabled = true
 script = ExtResource("1_v4twh")
 
@@ -99,9 +99,8 @@ z_index = 10
 texture = ExtResource("1_v3obi")
 hframes = 2
 
-[node name="Area2D" type="Area2D" parent="." groups=["grass"]]
-collision_layer = 2
-collision_mask = 4
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 16
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource("RectangleShape2D_v4twh")
@@ -112,5 +111,5 @@ libraries = {
 &"": SubResource("AnimationLibrary_nax7c")
 }
 
-[connection signal="area_entered" from="Area2D" to="." method="_on_area_2d_area_entered"]
-[connection signal="area_exited" from="Area2D" to="." method="_on_area_2d_area_exited"]
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_exited" from="Area2D" to="." method="_on_area_2d_body_exited"]

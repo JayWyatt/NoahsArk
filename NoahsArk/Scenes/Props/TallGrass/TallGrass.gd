@@ -1,4 +1,5 @@
 extends Node2D
+class_name TallGrass
 
 @onready var anim_player: AnimationPlayer = $AnimationPlayer
 @onready var area: Area2D = $Area2D
@@ -11,38 +12,24 @@ const GRASS_OVERLAY_TEXTURE := preload(
 )
 
 func _ready() -> void:
-		overlay.visible = false
-		grass_sprite.visible = true
+	overlay.visible = false
+	grass_sprite.visible = true
 
-func _on_area_2d_area_entered(area_entered: Area2D) -> void:
-	print("🌾 ENTER grass:",
-		"overlay was =", overlay.visible)
-	
-	if area_entered.name != "GrassDetector":
+func _on_area_2d_body_entered(body: Node2D) -> void:
+	if not body.is_in_group("player"):
 		return
 
-#Entering Grass
 	grass_sprite.visible = false
 	overlay.visible = true
 	anim_player.play("Stepped", 0.0)
-	
-	print("🌾 ENTER grass:",
-		"overlay now =", overlay.visible)
 
-
-func _on_area_2d_area_exited(area_exited: Area2D) -> void:
-	print("🍃 EXIT grass:",
-		"overlay was =", overlay.visible)
-	
-	if area_exited.name != "GrassDetector":
+func _on_area_2d_body_exited(body: Node2D) -> void:
+	if not body.is_in_group("player"):
 		return
 
 	anim_player.stop()
 	grass_sprite.visible = true
 	overlay.visible = false
-	
-	print("🍃 EXIT grass:",
-		"overlay now =", overlay.visible)
 
 func _on_stepped_finished() -> void:
 	# Only blend if the player is still in the grass
