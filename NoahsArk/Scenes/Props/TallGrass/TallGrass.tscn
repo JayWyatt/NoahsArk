@@ -92,13 +92,10 @@ script = ExtResource("1_v4twh")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("3_chbnw")
-centered = false
 
 [node name="Sprite2D2" type="Sprite2D" parent="."]
-visible = false
 z_index = 10
 texture = ExtResource("1_v3obi")
-centered = false
 hframes = 2
 
 [node name="Area2D" type="Area2D" parent="." groups=["grass"]]
@@ -106,7 +103,6 @@ collision_layer = 2
 collision_mask = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-position = Vector2(8, 8)
 shape = SubResource("RectangleShape2D_v4twh")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]

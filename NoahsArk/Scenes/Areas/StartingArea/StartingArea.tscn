@@ -1,4 +1,4 @@
-[gd_scene load_steps=54 format=4 uid="uid://btrhhyiun1g4r"]
+[gd_scene load_steps=56 format=4 uid="uid://btrhhyiun1g4r"]
 
 [ext_resource type="Script" uid="uid://qvx3vjqark11" path="res://Scenes/Areas/StartingArea/StartingArea.gd" id="1_ejlk6"]
 [ext_resource type="Texture2D" uid="uid://iehyyh7pqbn6" path="res://Assets/TileSets/pixel 16 woods v2.0/!spring[main]/trees & stuff.png" id="2_csbud"]
@@ -5338,6 +5338,12 @@ texture = ExtResource("2_csbud")
 [sub_resource type="TileSet" id="TileSet_xurll"]
 sources/0 = SubResource("TileSetAtlasSource_u6m32")
 
+[sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_m24lw"]
+scenes/2/scene = ExtResource("4_m24lw")
+
+[sub_resource type="TileSet" id="TileSet_c4xj0"]
+sources/0 = SubResource("TileSetScenesCollectionSource_m24lw")
+
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_j0eyr"]
 texture = ExtResource("2_csbud")
 5:0/0 = 0
@@ -5859,6 +5865,11 @@ rotation = -0.00014981272
 tile_map_data = PackedByteArray("AADw/wwAAAACAAoAAADw/w0AAAACAAsAAADx/wsAAAADAAkAAADx/wwAAAADAAoAAADx/w0AAAADAAsAAADx/w4AAAADAAwAAADy/wsAAAAEAAkAAADy/wwAAAAEAAoAAADy/w0AAAAEAAsAAADy/w4AAAAEAAwAAADz/wsAAAAFAAkAAADz/wwAAAAFAAoAAADz/w0AAAAFAAsAAADu/wMAAAACAAoAAADu/wQAAAACAAsAAADv/wIAAAADAAkAAADv/wMAAAADAAoAAADv/wQAAAADAAsAAADv/wUAAAADAAwAAADw/wIAAAAEAAkAAADw/wMAAAAEAAoAAADw/wQAAAAEAAsAAADw/wUAAAAEAAwAAADx/wIAAAAFAAkAAADx/wMAAAAFAAoAAADx/wQAAAAFAAsAAADv//T/AAACAAoAAADv//X/AAACAAsAAADw//P/AAADAAkAAADw//T/AAADAAoAAADw//X/AAADAAsAAADw//b/AAADAAwAAADx//P/AAAEAAkAAADx//T/AAAEAAoAAADx//X/AAAEAAsAAADx//b/AAAEAAwAAADy//P/AAAFAAkAAADy//T/AAAFAAoAAADy//X/AAAFAAsAAAD+//H/AAACAAoAAAD+//L/AAACAAsAAAD///D/AAADAAkAAAD///H/AAADAAoAAAD///L/AAADAAsAAAD///P/AAADAAwAAAAAAPD/AAAEAAkAAAAAAPH/AAAEAAoAAAAAAPL/AAAEAAsAAAAAAPP/AAAEAAwAAAABAPD/AAAFAAkAAAABAPH/AAAFAAoAAAABAPL/AAAFAAsAAAANAPL/AAACAAoAAAANAPP/AAACAAsAAAAOAPH/AAADAAkAAAAOAPL/AAADAAoAAAAOAPP/AAADAAsAAAAOAPT/AAADAAwAAAAPAPH/AAAEAAkAAAAPAPL/AAAEAAoAAAAPAPP/AAAEAAsAAAAPAPT/AAAEAAwAAAAQAPH/AAAFAAkAAAAQAPL/AAAFAAoAAAAQAPP/AAAFAAsAAADx/wYAAAAEAAUAAADx/wcAAAAEAAYAAADx/wgAAAAEAAcAAADy/wYAAAAFAAUAAADy/wcAAAAFAAYAAADy/wgAAAAFAAcAAADw//3/AAAEAAUAAADw//7/AAAEAAYAAADw////AAAEAAcAAADx//3/AAAFAAUAAADx//7/AAAFAAYAAADx////AAAFAAcAAAAKAPD/AAAEAAUAAAAKAPH/AAAEAAYAAAAKAPL/AAAEAAcAAAALAPD/AAAFAAUAAAALAPH/AAAFAAYAAAALAPL/AAAFAAcAAADy//f/AAAIAAEAAAAQAPT/AAAIAAEAAADy/w8AAAAIAAEAAADy//D/AAAFAAYAAADy//H/AAAFAAcAAADx/+//AAAEAAUAAADx//D/AAAEAAYAAADx//H/AAAEAAcAAADy/+//AAAFAAUAAAD1//L/AAADAAkAAAD1//P/AAADAAoAAAD2//L/AAAEAAkAAAD2//P/AAAEAAoAAAD2//T/AAAEAAsAAAD3//L/AAAFAAkAAAD3//P/AAAFAAoAAAD3//T/AAAFAAsAAAD0//P/AAACAAoAAAD0//T/AAACAAsAAAD1//T/AAADAAsAAAD1//X/AAADAAwAAAD2//X/AAAEAAwAAAD4//D/AAAEAAUAAAD4//H/AAAEAAYAAAD4//L/AAAEAAcAAAD5//D/AAAFAAUAAAD5//H/AAAFAAYAAAD5//L/AAAFAAcAAAA=")
 tile_set = SubResource("TileSet_xurll")
 
+[node name="TallGrass" type="TileMapLayer" parent="YSort/TileMapLayers"]
+y_sort_enabled = true
+tile_map_data = PackedByteArray("AAD//wAAAAAAAAAAAgAAAAAAAAAAAAAAAgABAAAAAAAAAAAAAgACAAAAAAAAAAAAAgD//wEAAAAAAAAAAgAAAAEAAAAAAAAAAgABAAEAAAAAAAAAAgACAAEAAAAAAAAAAgD8/wEAAAAAAAAAAgD/////AAAAAAAAAgAAAP//AAAAAAAAAgABAP//AAAAAAAAAgACAP//AAAAAAAAAgA=")
+tile_set = SubResource("TileSet_c4xj0")
+
 [node name="Trees" type="TileMapLayer" parent="YSort/TileMapLayers"]
 tile_map_data = PackedByteArray("AAAMAPX/AAAAAAUAAAAIAPX/AAAAAAUAAAAPAPf/AAAAAAUAAAALAPv/AAAAAAUAAAACAPb/AAAAAAUAAAD+//n/AAAAAAUAAAD2//f/AAAAAAUAAAD5/wcAAAAAAAUAAAAEAAgAAAAAAAUAAAALAAYAAAAAAAUAAAA=")
 tile_set = SubResource("TileSet_jx7vl")
@@ -5873,45 +5884,3 @@ tile_set = SubResource("TileSet_u6m32")
 
 [node name="House" parent="YSort/HousesRoot" instance=ExtResource("15_gsau2")]
 position = Vector2(-142.965, -25.685)
-
-[node name="Grasses" type="Node2D" parent="YSort"]
-y_sort_enabled = true
-
-[node name="TallGrass" parent="YSort/Grasses" instance=ExtResource("4_m24lw")]
-position = Vector2(0, -12)
-
-[node name="TallGrass2" parent="YSort/Grasses" instance=ExtResource("4_m24lw")]
-position = Vector2(15, -12)
-
-[node name="TallGrass3" parent="YSort/Grasses" instance=ExtResource("4_m24lw")]
-position = Vector2(45, -12)
-
-[node name="TallGrass4" parent="YSort/Grasses" instance=ExtResource("4_m24lw")]
-position = Vector2(30, -12)
-
-[node name="TallGrass5" parent="YSort/Grasses" instance=ExtResource("4_m24lw")]
-position = Vector2(0, 3)
-
-[node name="TallGrass6" parent="YSort/Grasses" instance=ExtResource("4_m24lw")]
-position = Vector2(15, 3)
-
-[node name="TallGrass7" parent="YSort/Grasses" instance=ExtResource("4_m24lw")]
-position = Vector2(45, 3)
-
-[node name="TallGrass8" parent="YSort/Grasses" instance=ExtResource("4_m24lw")]
-position = Vector2(30, 3)
-
-[node name="TallGrass9" parent="YSort/Grasses" instance=ExtResource("4_m24lw")]
-position = Vector2(0, 18)
-
-[node name="TallGrass10" parent="YSort/Grasses" instance=ExtResource("4_m24lw")]
-position = Vector2(15, 18)
-
-[node name="TallGrass11" parent="YSort/Grasses" instance=ExtResource("4_m24lw")]
-position = Vector2(45, 18)
-
-[node name="TallGrass12" parent="YSort/Grasses" instance=ExtResource("4_m24lw")]
-position = Vector2(30, 18)
-
-[node name="TallGrass13" parent="YSort/Grasses" instance=ExtResource("4_m24lw")]
-position = Vector2(-46, 15)
