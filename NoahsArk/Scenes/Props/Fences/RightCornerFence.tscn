@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://d31fdktktiqbl"]
+
+[ext_resource type="Script" uid="uid://2ofxkgxisjla" path="res://Scenes/Props/Fences/Fence.gd" id="1_afacu"]
+[ext_resource type="Texture2D" uid="uid://bedpdbh13ejt4" path="res://Assets/TileSets/Houses & Fences.png" id="2_qfb0u"]
+
+[node name="RightCornerFence" type="Node2D" groups=["fences"]]
+script = ExtResource("1_afacu")
+
+[node name="Top" type="Sprite2D" parent="."]
+position = Vector2(0, -8)
+texture = ExtResource("2_qfb0u")
+region_enabled = true
+region_rect = Rect2(80, 160, 16, 16)

@@ -16,8 +16,8 @@ config/features=PackedStringArray("4.5", "Mobile")
 
 [autoload]
 
-TransitionScene="*res://Scenes/Transitions/TransitionScene.tscn"
-MusicManagerGlobal="*res://Scripts/Globals/MusicManagerGlobal.gd"
+TransitionScene="*res://Scenes/Functionalities/Transitions/TransitionScene.tscn"
+MusicManagerGlobal="*res://Scenes/Globals/GlobalScripts/MusicManagerGlobal.gd"
 
 [display]
 
@@ -111,7 +111,8 @@ interact={
 [layer_names]
 
 2d_physics/layer_1="Player"
-2d_physics/layer_2="World"
+2d_physics/layer_2="Grass"
+2d_physics/layer_3="PlayerDetector"
 
 [rendering]
 
