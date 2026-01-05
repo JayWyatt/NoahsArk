@@ -1,9 +1,10 @@
-[gd_scene load_steps=82 format=4 uid="uid://b70mkdyduqecx"]
+[gd_scene load_steps=83 format=4 uid="uid://b70mkdyduqecx"]
 
 [ext_resource type="Texture2D" uid="uid://crtkccgfck1i8" path="res://Assets/TileSets/pixel 16 woods v2.0/!spring[main]/tilesetV2.png" id="1_s5wlk"]
 [ext_resource type="Script" uid="uid://c3bqcs4m1iutp" path="res://Scenes/Areas/Farm/Farm.gd" id="1_yls12"]
 [ext_resource type="Texture2D" uid="uid://iehyyh7pqbn6" path="res://Assets/TileSets/pixel 16 woods v2.0/!spring[main]/trees & stuff.png" id="2_qsypj"]
 [ext_resource type="Texture2D" uid="uid://brg2qcmno2aet" path="res://Assets/TileSets/pixel 16 woods v2.0/!spring[main]/cliff_high.png" id="3_wdxtv"]
+[ext_resource type="Script" uid="uid://dvj7f44od4114" path="res://Scenes/Functionalities/Exits/Door.gd" id="4_bkhbt"]
 [ext_resource type="Texture2D" uid="uid://datreh15she61" path="res://Assets/TileSets/Home Made Assets/TileSet1.png" id="4_o4nkv"]
 [ext_resource type="Texture2D" uid="uid://bedpdbh13ejt4" path="res://Assets/TileSets/Houses & Fences.png" id="5_3ukgf"]
 [ext_resource type="Texture2D" uid="uid://bf4xnmcvser75" path="res://Assets/TileSets/pixel 16 woods v2.0/summer/summer_tileset.png" id="6_qsypj"]
@@ -17976,7 +17977,8 @@ position = Vector2(-80, -996)
 shape = SubResource("RectangleShape2D_wdxtv")
 
 [node name="ToFarmHouse" type="Area2D" parent="Exits"]
-script = ExtResource("8_wdxtv")
+script = ExtResource("4_bkhbt")
+target_scene_path = "res://Scenes/Buildings/Farm/FarmHouseInterior.tscn"
 target_spawn_name = "FromFarm"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Exits/ToFarmHouse"]

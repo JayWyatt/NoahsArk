@@ -63,6 +63,7 @@ func load_area(scene_path: String, spawn_id: String) -> void:
 		if node.is_in_group("trees") \
 		or node.is_in_group("house_base") \
 		or node.is_in_group("house_roof") \
+		or node.is_in_group("npc") \
 		or node.is_in_group("tall_grass"):
 			node.queue_free()
 
@@ -81,6 +82,7 @@ func load_area(scene_path: String, spawn_id: String) -> void:
 # Move Y-sorted world objects out of the area
 	move_group_to_ysort("trees")
 	move_group_to_ysort("tall_grass")
+	move_group_to_ysort("npc")
 
 
 	var player := get_tree().get_first_node_in_group("player")
