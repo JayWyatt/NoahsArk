@@ -22,7 +22,6 @@ var grass_overlap_count := 0
 var grass_overlay: Sprite2D
 var step_timer := step_start_delay
 
-
 @onready var anim: AnimatedSprite2D = $AnimatedSprite2D
 @onready var interact_ray: RayCast2D = $InteractRay
 
@@ -99,6 +98,7 @@ func _physics_process(delta: float) -> void:
 	else:
 		step_timer = step_start_delay
 
+
 func _play_footstep() -> void:
 	var sound_prefix := "walkgrass"
 
@@ -157,8 +157,9 @@ func _input(event: InputEvent) -> void:
 # --------------------
 # UseTool
 # --------------------
-
 func try_use_tool() -> void:
+	print("🟡 try_use_tool called")
+
 	if is_swinging:
 		return
 
@@ -175,33 +176,103 @@ func try_use_tool() -> void:
 	if slot == null or slot.item == null:
 		return
 
-	if slot.item.item_type != InvItem.ItemType.TOOL:
+	var item := slot.item
+
+	# -------------------------------------------------
+	# 🌱 FARM / SEED INTERACTION  (FIXED + COMPLETE)
+	# -------------------------------------------------
+	var world := get_tree().get_first_node_in_group("world") as World
+	print("🌍 world =", world)
+
+	if world != null:
+		var area := world.current_area.get_child(0) as Node2D
+		if area == null:
+			print("❌ No current area found")
+			return
+
+		var farm := world.get_node_or_null("FarmTileInteractor")
+		print("🌱 farm interactor =", farm)
+
+		if farm != null:
+			var farm_target: Dictionary = farm.get_facing_farm_cell(self)
+			print("🌾 farm_target =", farm_target)
+
+			# ⛔ If you're not facing a farm tile, we simply don't plant.
+			# We DO NOT return here, because you might be using a tool (axe/fishing) elsewhere.
+			if not farm_target.is_empty():
+				print("🌱 Facing farm tile:", farm_target["cell"])
+
+				# 🌱 SEED CHECK (only attempt planting if facing farm tile)
+				if item.item_type == InvItem.ItemType.CONSUMABLE \
+				and item.seed_crop_id != "":
+
+					var tilemap: TileMapLayer = farm_target["tilemap"]
+					var cell: Vector2i = farm_target["cell"]
+
+					var crop_registry := world.get_node_or_null("CropRegistry") as CropRegistry
+					if crop_registry == null:
+						print("❌ CropRegistry missing")
+						return
+
+					var planted: bool = crop_registry.plant_seed(
+						area,
+						tilemap,
+						cell,
+						item.seed_crop_id
+					)
+
+					if planted:
+						# 🔻 Consume seed
+						slot.amount -= 1
+						if slot.amount <= 0:
+							inv.slots[active_hotbar_index] = null
+
+						inv.notify_changed()
+						print("🌾 Seed consumed, planting successful")
+
+						# 🌱 IMMEDIATE VISUAL FEEDBACK (STAGE 0)
+						var key := crop_registry._make_key(tilemap, cell)
+						var data = crop_registry.planted_crops[key]
+
+						crop_registry.spawn_single_crop_visual(
+							area,
+							tilemap,
+							cell,
+							data
+						)
+
+						print("🌱 Seed visual spawned immediately")
+					else:
+						print("⚠️ Tile already planted")
+
+					return  # ⛔ stop further tool logic ONLY when we attempted planting
+
+	# -------------------------------------------------
+	# 🛠️ TOOL INTERACTION (AXE / FISHING)
+	# -------------------------------------------------
+	if item.item_type != InvItem.ItemType.TOOL:
 		return
 
 	var fishing := $FishingController as FishingController
 
 	print(
 		"[PLAYER] Using tool:",
-		slot.item.tool_type,
+		item.tool_type,
 		"is_fishing=",
 		fishing != null and fishing.is_fishing
 	)
 
 	if fishing and fishing.is_fishing:
-		if slot.item.tool_type != "FishingRod":
+		if item.tool_type != "FishingRod":
 			return
 
-
-	match slot.item.tool_type.to_lower():
+	match item.tool_type.to_lower():
 		"axe":
-			_start_axe_swing(slot.item)
-
+			_start_axe_swing(item)
 		"fishingrod":
 			_start_fishing()
-
 		_:
-			print("[PLAYER] Unknown tool type:", slot.item.tool_type)
-
+			print("[PLAYER] Unknown tool type:", item.tool_type)
 
 func _start_axe_swing(tool: InvItem) -> void:
 	print("[PLAYER] Starting axe swing")
@@ -224,6 +295,7 @@ func _start_fishing() -> void:
 
 	anim.play("FishingCast" + last_direction)
 	fishing.start_fishing()
+
 # --------------------
 # APPLY DAMAGE
 # --------------------

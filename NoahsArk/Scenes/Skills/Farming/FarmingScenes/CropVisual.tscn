@@ -1,0 +1,29 @@
+[gd_scene load_steps=9 format=3 uid="uid://dlfehfgw5htxj"]
+
+[ext_resource type="Script" uid="uid://dc136wj5jtnfn" path="res://Scenes/Skills/Farming/FarmingScripts/CropVisual.gd" id="1_oq6jr"]
+[ext_resource type="Texture2D" uid="uid://b10xf3648xrhc" path="res://Assets/TileSets/Mana Seed Farming Crops/Crops/ChilliCrop/ChilliCropResources/ChilliCropStage1.png" id="2_agvwn"]
+[ext_resource type="Texture2D" uid="uid://baj6clna713vd" path="res://Assets/TileSets/Mana Seed Farming Crops/Crops/ChilliCrop/ChilliCropResources/ChilliSeeds.png" id="2_gvfxi"]
+[ext_resource type="Texture2D" uid="uid://dbyheys44g6ae" path="res://Assets/TileSets/Mana Seed Farming Crops/Crops/ChilliCrop/ChilliCropResources/ChilliCropStage2.png" id="3_nvfi3"]
+[ext_resource type="Texture2D" uid="uid://57pj1io3lacf" path="res://Assets/TileSets/Mana Seed Farming Crops/Crops/ChilliCrop/ChilliCropResources/ChilliCropStage3.png" id="4_gvfxi"]
+[ext_resource type="Texture2D" uid="uid://lhl4l5flvngj" path="res://Assets/TileSets/Mana Seed Farming Crops/Crops/ChilliCrop/ChilliCropResources/ChilliCropStage4.png" id="5_5ium8"]
+[ext_resource type="Texture2D" uid="uid://s5q1tbxgwxsk" path="res://Assets/TileSets/Mana Seed Farming Crops/Crops/ChilliCrop/ChilliCropResources/ChilliCropStage5.png" id="6_0eb1y"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nvfi3"]
+size = Vector2(8.5, 23)
+
+[node name="CropVisual" type="Node2D"]
+script = ExtResource("1_oq6jr")
+stage_textures = Array[Texture2D]([ExtResource("2_gvfxi"), ExtResource("2_agvwn"), ExtResource("3_nvfi3"), ExtResource("4_gvfxi"), ExtResource("5_5ium8"), ExtResource("6_0eb1y")])
+
+[node name="InteractArea" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractArea"]
+z_index = 11
+position = Vector2(0.25, -0.5)
+shape = SubResource("RectangleShape2D_nvfi3")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+z_index = 10
+texture = ExtResource("2_agvwn")
