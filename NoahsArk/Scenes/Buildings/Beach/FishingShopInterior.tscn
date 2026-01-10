@@ -1438,6 +1438,8 @@ tile_set = SubResource("TileSet_vx03p")
 
 [node name="NPC" parent="." instance=ExtResource("5_vx03p")]
 collision_layer = 2
+npc_id = "fisherman"
+dialogue_id = "fisherman_intro"
 npc_name = "Fisherman"
 
 [node name="AnimatedSprite2D" parent="NPC" index="0"]

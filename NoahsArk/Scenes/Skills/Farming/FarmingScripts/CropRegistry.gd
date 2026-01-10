@@ -4,7 +4,6 @@ class_name CropRegistry
 @export var crop_visual_scene: PackedScene
 @export var crop_items: Dictionary = {}
 
-
 # Key: "tilemap_path|x,y"
 # Value: Dictionary with full crop data
 var planted_crops: Dictionary = {}
@@ -19,6 +18,19 @@ func _make_key(tilemap: TileMapLayer, cell: Vector2i) -> String:
 		cell.y
 	]
 
+func _get_crop_data(crop_id: String) -> CropData:
+	var crop_db := get_tree().get_first_node_in_group("crop_database") as CropDatabase
+	if crop_db == null:
+		push_error("❌ CropDatabase not found (group: crop_database)")
+		return null
+
+	var crop_data := crop_db.get_crop(crop_id)
+	if crop_data == null:
+		push_error("❌ Unknown crop id: " + crop_id)
+		return null
+
+	return crop_data
+
 # ===============================
 # PLANTING
 # ===============================
@@ -31,9 +43,8 @@ func plant_seed(
 	var key := _make_key(tilemap, cell)
 
 	if planted_crops.has(key):
-		return false # already planted
+		return false
 
-	# 🔴 STORE COMPLETE DATA (CRITICAL FIX)
 	planted_crops[key] = {
 		"crop_id": seed_crop_id,
 		"planted_time": Time.get_unix_time_from_system(),
@@ -49,57 +60,37 @@ func plant_seed(
 # AREA VISUAL SPAWNING
 # ===============================
 func spawn_crops_for_area(area: Node2D) -> void:
-	print("🟢 spawn_crops_for_area CALLED for:", area.name)
-	print("🌾 planted_crops keys:", planted_crops.keys())
-
 	for key in planted_crops.keys():
 		var data = planted_crops[key]
 
-		# 🛡️ SAFETY GUARD (PREVENTS CRASHES)
-		if not data.has("area_path"):
-			print("⚠️ Skipping invalid crop data:", data)
+		if data.get("area_path") != area.scene_file_path:
 			continue
 
-		print("🔎 checking crop data:", data)
-		print("🔎 area_path =", data["area_path"])
-		print("🔎 current area =", area.scene_file_path)
-
-		if data["area_path"] != area.scene_file_path:
-			print("⏭️ skipping crop (different area)")
-			continue
-
-		print("🧩 trying tilemap path:", data["tilemap_path"])
 		var tilemap := area.get_node_or_null(data["tilemap_path"]) as TileMapLayer
-
 		if tilemap == null:
-			print("❌ tilemap NOT FOUND")
 			continue
 
-		print("🌱 INSTANTIATING CropVisual")
+		var crop_data := _get_crop_data(data["crop_id"])
+		if crop_data == null:
+			continue
 
-		# Use exported scene if assigned, otherwise fallback
-		var crop_scene: PackedScene = crop_visual_scene
-		if crop_scene == null:
-			crop_scene = preload(
-				"res://Scenes/Skills/Farming/FarmingScenes/CropVisual.tscn"
-			)
+		var crop_scene := crop_visual_scene \
+			if crop_visual_scene != null \
+			else preload("res://Scenes/Skills/Farming/FarmingScenes/CropVisual.tscn")
 
 		var crop := crop_scene.instantiate() as CropVisual
 		area.add_child(crop)
 
 		crop.setup(
-			data["crop_id"],
+			crop_data,
 			data["planted_time"],
 			tilemap,
 			data["cell"]
 		)
 
 # ===============================
-# PROCESS (NOT USED YET)
+# SINGLE SPAWN (IMMEDIATE PLANTING)
 # ===============================
-func _process(_delta: float) -> void:
-	pass
-
 func spawn_single_crop_visual(
 	area: Node2D,
 	tilemap: TileMapLayer,
@@ -110,11 +101,15 @@ func spawn_single_crop_visual(
 		push_error("❌ Crop visual scene not assigned")
 		return
 
+	var crop_data := _get_crop_data(data["crop_id"])
+	if crop_data == null:
+		return
+
 	var crop := crop_visual_scene.instantiate() as CropVisual
 	area.add_child(crop)
 
 	crop.setup(
-		data["crop_id"],
+		crop_data,
 		data["planted_time"],
 		tilemap,
 		cell
