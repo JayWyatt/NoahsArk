@@ -196,6 +196,18 @@ func _process(_delta: float) -> void:
 	preview.show_at(tilemap, cell, can_plant)
 
 func _input(event: InputEvent) -> void:
+	if DialogueManager.active_dialogue != null:
+		return  # ⛔ player input locked during dialogue
+
+	if event.is_action_pressed("interact"):
+		print("🔥 INTERACT PRESSED - raycasting NPCs...")
+		var space_state = get_world_2d().direct_space_state
+		var query = PhysicsRayQueryParameters2D.create(global_position, global_position + Vector2(100, 0).rotated(global_rotation))  # Forward 100px
+		var result = space_state.intersect_ray(query)
+		if result and result.collider.has_method("interact"):
+			result.collider.interact()
+			return
+
 	# --------------------
 	# HOTBAR KEYS (UNCHANGED)
 	# --------------------

@@ -5,5 +5,5 @@
 [resource]
 script = ExtResource("1_k4gll")
 id = "fisherman_intro"
-lines = Array[String](["Hello, I am fisherman, nice to meet you."])
+lines = Array[String](["if your name is jay and you read this youre gay!"])
 metadata/_custom_type_script = "uid://cdlrjmdnh8xu3"

@@ -24,27 +24,27 @@ func _play_idle():
 	if anim.sprite_frames.has_animation(anim_name):
 		anim.play(anim_name)
 
-#player proximity detection
 func _on_body_entered(body: Node) -> void:
 	if body.is_in_group("player"):
 		player_in_range = true
-		print("🟢 Player entered NPC range:", npc_name)
-
+		print("🟢 Player entered NPC range:", npc_name, " | player_in_range=", player_in_range)
 
 func _on_body_exited(body: Node) -> void:
 	if body.is_in_group("player"):
 		player_in_range = false
-		print("🔴 Player left NPC range:", npc_name)
+		print("🔴 Player left NPC range:", npc_name, " | player_in_range=", player_in_range)
 
 func interact() -> void:
-	# 🔒 Prevent talking from far away
+	print("💬 interact() CALLED on", npc_name, " | player_in_range=", player_in_range, " | dialogue_id=", dialogue_id)
 	if not player_in_range:
+		print("❌ Player out of range - ignoring")
 		return
+	if dialogue_id == "":
+		print("❌ No dialogue_id set")
+		return
+	print("✅ Starting dialogue:", dialogue_id)
+	DialogueManager.start_dialogue(dialogue_id, self)  # Existing call
 
-	print("Talking to", npc_name)
-
-	if dialogue_id != "":
-		DialogueManager.start_dialogue(dialogue_id, self)
 
 func _physics_process(_delta: float) -> void:
 	if velocity != Vector2.ZERO:

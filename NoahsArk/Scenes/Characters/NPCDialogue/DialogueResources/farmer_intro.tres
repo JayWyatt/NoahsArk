@@ -5,5 +5,5 @@
 [resource]
 script = ExtResource("1_fncdu")
 id = "farmer_intro"
-lines = Array[String](["Hello, how are you?, I am a farmer."])
+lines = Array[String](["Hello Jay The Gay, You Wanna Farm These Nuts?"])
 metadata/_custom_type_script = "uid://cdlrjmdnh8xu3"
