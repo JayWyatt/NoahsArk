@@ -23,6 +23,7 @@ var grass_overlap_count := 0
 var grass_overlay: Sprite2D
 var step_timer := step_start_delay
 var nearby_npc: NPC = null
+var nearby_cooking_station: CookingStation = null
 
 @onready var anim: AnimatedSprite2D = $AnimatedSprite2D
 @onready var interact_ray: RayCast2D = $InteractRay
@@ -32,9 +33,16 @@ var nearby_npc: NPC = null
 # --------------------
 func _physics_process(delta: float) -> void:
 	var fishing := $FishingController as FishingController
+	var cooking := $CookingController as CookingController
 
 	# Block movement while fishing
 	if fishing and fishing.is_fishing:
+		velocity = Vector2.ZERO
+		move_and_slide()
+		return
+
+	# Block movement while cooking
+	if cooking and cooking.is_cooking:
 		velocity = Vector2.ZERO
 		move_and_slide()
 		return
@@ -93,7 +101,6 @@ func _physics_process(delta: float) -> void:
 	if velocity.length() > 0.0 and not is_swinging:
 		if fishing == null or not fishing.is_fishing:
 			step_timer -= delta
-
 			if step_timer <= 0.0:
 				_play_footstep()
 				step_timer = step_interval
@@ -103,8 +110,6 @@ func _physics_process(delta: float) -> void:
 
 func _play_footstep() -> void:
 	var sound_prefix := "walkgrass"
-
-	# Later you can swap this based on surface type
 	if grass_overlap_count > 0:
 		sound_prefix = "walkgrass"
 
@@ -115,25 +120,18 @@ func _play_footstep() -> void:
 	)
 
 # --------------------
-# AXE HIT CHECK
+# AXE HIT CHECK + SEED PREVIEW (RESTORED)
 # --------------------
 func _process(_delta: float) -> void:
-	# --------------------------------
-	# RESET PER-FRAME FLAGS
-	# --------------------------------
+	# Reset per-frame flags
 	block_planting_this_frame = false
 
-	# --------------------------------
-	# AXE HIT CHECK (UNCHANGED)
-	# --------------------------------
+	# Axe hit check
 	if is_swinging and not has_hit_this_swing:
-		# 🔧 Change this number to match your animation
 		if anim.frame >= 2:
 			_apply_axe_hit()
 
-	# --------------------------------
-	# SEED TILE PREVIEW
-	# --------------------------------
+	# Seed tile preview
 	var preview := get_tree().get_first_node_in_group("seed_preview")
 	if preview == null:
 		return
@@ -154,17 +152,13 @@ func _process(_delta: float) -> void:
 	var tilemap: TileMapLayer = null
 	var cell: Vector2i
 
-	# --------------------------------
-	# FIND FARM TILE UNDER MOUSE
-	# --------------------------------
+	# Find farm tile under mouse
 	for tm in area.find_children("*", "TileMapLayer", true, false):
 		var local_pos = tm.to_local(mouse_pos)
 		var test_cell = tm.local_to_map(local_pos)
 		var data = tm.get_cell_tile_data(test_cell)
-
 		if data == null:
 			continue
-
 		if data.has_custom_data("tile_type") and data.get_custom_data("tile_type") == "farm":
 			tilemap = tm
 			cell = test_cell
@@ -174,9 +168,7 @@ func _process(_delta: float) -> void:
 		preview.hide_preview()
 		return
 
-	# --------------------------------
-	# CHECK IF TILE IS EMPTY + IN RANGE
-	# --------------------------------
+	# Check if tile is empty + in range
 	var crop_registry := world.get_node_or_null("CropRegistry")
 	if crop_registry == null:
 		preview.hide_preview()
@@ -186,80 +178,83 @@ func _process(_delta: float) -> void:
 	var in_range := _is_within_plant_distance(tilemap, cell)
 	var is_empty = not crop_registry.planted_crops.has(key)
 
-	# Can plant ONLY if empty AND in range
-	var can_plant = is_empty and in_range
+	preview.show_at(tilemap, cell, is_empty and in_range)
 
-	# --------------------------------
-	# SHOW PREVIEW
-	# --------------------------------
-	# Always show preview on farm tiles
-	preview.show_at(tilemap, cell, can_plant)
-
+# --------------------
+# INPUT
+# --------------------
 func _input(event: InputEvent) -> void:
-	if DialogueManager.active_dialogue != null:
-		return  # ⛔ player input locked during dialogue
-
-	if event.is_action_pressed("interact"):
-		print("🔥 INTERACT PRESSED - raycasting NPCs...")
-		var space_state = get_world_2d().direct_space_state
-		var query = PhysicsRayQueryParameters2D.create(global_position, global_position + Vector2(100, 0).rotated(global_rotation))  # Forward 100px
-		var result = space_state.intersect_ray(query)
-		if result and result.collider.has_method("interact"):
-			result.collider.interact()
-			return
-
 	# --------------------
-	# HOTBAR KEYS (UNCHANGED)
-	# --------------------
-	if event is InputEventKey and event.pressed and not event.echo:
-		if Input.is_action_just_pressed("hotbar_1"):
-			select_hotbar_slot(0)
-		elif Input.is_action_just_pressed("hotbar_2"):
-			select_hotbar_slot(1)
-		elif Input.is_action_just_pressed("hotbar_3"):
-			select_hotbar_slot(2)
-		elif Input.is_action_just_pressed("hotbar_4"):
-			select_hotbar_slot(3)
-		elif Input.is_action_just_pressed("hotbar_5"):
-			select_hotbar_slot(4)
-		elif Input.is_action_just_pressed("hotbar_6"):
-			select_hotbar_slot(5)
-		elif Input.is_action_just_pressed("hotbar_7"):
-			select_hotbar_slot(6)
-		elif Input.is_action_just_pressed("hotbar_8"):
-			select_hotbar_slot(7)
-		elif Input.is_action_just_pressed("hotbar_9"):
-			select_hotbar_slot(8)
-		elif Input.is_action_just_pressed("hotbar_0"):
-			select_hotbar_slot(9)
-
-	# --------------------
-	# 🖱️ LEFT MOUSE → TOOLS + FARMING ONLY
+	# LEFT CLICK (always allowed)
 	# --------------------
 	if event is InputEventMouseButton \
 	and event.button_index == MOUSE_BUTTON_LEFT \
 	and event.pressed:
+
+		var cooking := $CookingController as CookingController
+		if cooking and cooking.is_cooking:
+			print("[PLAYER] Left click → try flip")
+			cooking.try_flip()
+			return
+
 		try_use_tool()
 		return
 
+
 	# --------------------
-	# 🗣️ E KEY → NPC INTERACTION ONLY
+	# E / INTERACT (blocked during dialogue)
 	# --------------------
 	if event.is_action_pressed("interact"):
+		if DialogueManager.active_dialogue != null:
+			return
+
+		var cooking := $CookingController as CookingController
+		if cooking and cooking.is_cooking:
+			return
+
+		if nearby_cooking_station != null and cooking:
+			var item := _get_held_item()
+			if item and item.is_cookable and item.cooked_version:
+				cooking.start_cooking(item)
+				return
+
 		if nearby_npc != null:
 			nearby_npc.interact()
-		return
+			return
+
+
+	# --------------------
+	# HOTBAR KEYS
+	# --------------------
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.is_action_pressed("hotbar_1"):
+			select_hotbar_slot(0)
+		elif event.is_action_pressed("hotbar_2"):
+			select_hotbar_slot(1)
+		elif event.is_action_pressed("hotbar_3"):
+			select_hotbar_slot(2)
+		elif event.is_action_pressed("hotbar_4"):
+			select_hotbar_slot(3)
+		elif event.is_action_pressed("hotbar_5"):
+			select_hotbar_slot(4)
+		elif event.is_action_pressed("hotbar_6"):
+			select_hotbar_slot(5)
+		elif event.is_action_pressed("hotbar_7"):
+			select_hotbar_slot(6)
+		elif event.is_action_pressed("hotbar_8"):
+			select_hotbar_slot(7)
+		elif event.is_action_pressed("hotbar_9"):
+			select_hotbar_slot(8)
+		elif event.is_action_pressed("hotbar_0"):
+			select_hotbar_slot(9)
 
 
 # --------------------
-# UseTool
+# UseTool (RESTORED: FARMING + TOOLS)
 # --------------------
 func try_use_tool() -> void:
-	print("🟡 try_use_tool called")
-
 	if block_planting_this_frame:
 		return
-
 	if is_swinging:
 		return
 
@@ -279,52 +274,36 @@ func try_use_tool() -> void:
 	var item := slot.item
 
 	# -------------------------------------------------
-	# 🌱 FARM / SEED INTERACTION  (FIXED + COMPLETE)
+	# FARM / SEED INTERACTION (restored)
 	# -------------------------------------------------
 	var world := get_tree().get_first_node_in_group("world") as World
-	print("🌍 world =", world)
-
 	if world != null:
 		var area := world.current_area.get_child(0) as Node2D
 		if area == null:
-			print("❌ No current area found")
 			return
 
 		var farm := world.get_node_or_null("FarmTileInteractor")
-		print("🌱 farm interactor =", farm)
-
 		if farm != null:
 			var farm_target: Dictionary
 
-			# 🌱 SEEDS → mouse-based targeting
+			# Seeds -> mouse based targeting
 			if item.item_type == InvItem.ItemType.CONSUMABLE and item.seed_crop_id != "":
 				farm_target = _get_mouse_farm_cell()
 			else:
-				# 🛠️ TOOLS → facing-based targeting
+				# Tools -> facing based targeting
 				farm_target = farm.get_facing_farm_cell(self)
 
-			print("🌾 farm_target =", farm_target)
-
-			# ⛔ If you're not facing a farm tile, we simply don't plant.
-			# We DO NOT return here, because you might be using a tool (axe/fishing) elsewhere.
 			if not farm_target.is_empty():
-				print("🌱 Facing farm tile:", farm_target["cell"])
-
-				# 🌱 SEED CHECK (only attempt planting if facing farm tile)
-				if item.item_type == InvItem.ItemType.CONSUMABLE \
-				and item.seed_crop_id != "":
-
+				# If holding seeds and targeting farm tile, plant
+				if item.item_type == InvItem.ItemType.CONSUMABLE and item.seed_crop_id != "":
 					var tilemap: TileMapLayer = farm_target["tilemap"]
 					var cell: Vector2i = farm_target["cell"]
 
 					if not _is_within_plant_distance(tilemap, cell):
-						print("❌ Too far away to plant")
 						return
-
 
 					var crop_registry := world.get_node_or_null("CropRegistry") as CropRegistry
 					if crop_registry == null:
-						print("❌ CropRegistry missing")
 						return
 
 					var planted: bool = crop_registry.plant_seed(
@@ -335,45 +314,30 @@ func try_use_tool() -> void:
 					)
 
 					if planted:
-						# 🔻 Consume seed
+						# Consume seed
 						slot.amount -= 1
 						if slot.amount <= 0:
 							inv.slots[active_hotbar_index] = null
 
 						inv.notify_changed()
-						print("🌾 Seed consumed, planting successful")
 
-						# 🌱 IMMEDIATE VISUAL FEEDBACK (STAGE 0)
+						# Immediate visual feedback
 						var key := crop_registry._make_key(tilemap, cell)
 						var data = crop_registry.planted_crops[key]
+						crop_registry.spawn_single_crop_visual(area, tilemap, cell, data)
 
-						crop_registry.spawn_single_crop_visual(
-							area,
-							tilemap,
-							cell,
-							data
-						)
-
-						print("🌱 Seed visual spawned immediately")
-					else:
-						print("⚠️ Tile already planted")
-
-					return  # ⛔ stop further tool logic ONLY when we attempted planting
+					return  # stop further tool logic only if we attempted planting
 
 	# -------------------------------------------------
-	# 🛠️ TOOL INTERACTION (AXE / FISHING)
+	# TOOL INTERACTION (AXE / FISHING)
 	# -------------------------------------------------
 	if item.item_type != InvItem.ItemType.TOOL:
 		return
 
 	var fishing := $FishingController as FishingController
-
-	print(
-		"[PLAYER] Using tool:",
-		item.tool_type,
-		"is_fishing=",
-		fishing != null and fishing.is_fishing
-	)
+	var cooking := $CookingController as CookingController
+	if cooking and cooking.is_cooking:
+		return
 
 	if fishing and fishing.is_fishing:
 		if item.tool_type != "FishingRod":
@@ -385,10 +349,9 @@ func try_use_tool() -> void:
 		"fishingrod":
 			_start_fishing()
 		_:
-			print("[PLAYER] Unknown tool type:", item.tool_type)
+			pass
 
 func _start_axe_swing(tool: InvItem) -> void:
-	print("[PLAYER] Starting axe swing")
 	is_swinging = true
 	has_hit_this_swing = false
 	pending_tool = tool
@@ -402,39 +365,21 @@ func _start_fishing() -> void:
 	var water_tilemap := fishing._get_water_tilemap()
 	if water_tilemap == null:
 		return
-
 	if not fishing._is_facing_water(water_tilemap):
 		return
 
 	anim.play("FishingCast" + last_direction)
 	fishing.start_fishing()
 
-# --------------------
-# APPLY DAMAGE
-# --------------------
 func _apply_axe_hit() -> void:
 	has_hit_this_swing = true
-
-	print("AXE HIT CHECK")
-
 	if not interact_ray.is_colliding():
-		print("❌ Ray is NOT colliding")
 		return
-
 	var target := interact_ray.get_collider()
-	print("✅ Ray hit:", target, " type:", target.get_class())
-
 	if target and target.has_method("interact"):
-		print("🪓 Calling interact() on", target.name)
 		target.interact(pending_tool)
-	else:
-		print("⚠️ Hit object has NO interact() method")
 
-# --------------------
-# ANIMATION FINISHED
-# --------------------
 func _on_AnimatedSprite2D_animation_finished() -> void:
-	print("[PLAYER] animation_finished:", anim.animation)
 	is_swinging = false
 	pending_tool = null
 	has_hit_this_swing = false
@@ -456,8 +401,8 @@ func _update_direction(input_dir: Vector2) -> void:
 
 func _update_animation(input_dir: Vector2) -> void:
 	var fishing := $FishingController as FishingController
-	if fishing and fishing.is_fishing:
-		print("[PLAYER] Skipping Idle/Walk override (fishing)")
+	var cooking := $CookingController as CookingController
+	if (fishing and fishing.is_fishing) or (cooking and cooking.is_cooking):
 		return
 
 	var target_anim: String
@@ -467,9 +412,7 @@ func _update_animation(input_dir: Vector2) -> void:
 		target_anim = "Walk" + last_direction
 
 	if anim.animation != target_anim:
-		print("[PLAYER] Forcing animation:", target_anim)
-
-	anim.play(target_anim)
+		anim.play(target_anim)
 
 func _update_interact_ray_direction() -> void:
 	var reach := 18.0
@@ -487,46 +430,23 @@ func select_hotbar_slot(index: int) -> void:
 
 	active_hotbar_index = index
 
-	# 🔴 Update HOTBAR UI (this was missing)
 	var hotbar := get_tree().get_first_node_in_group("hotbar_ui")
 	if hotbar:
 		hotbar.set_active_slot(index)
 
-	# 🔴 Update INVENTORY UI
 	var inv_ui := get_tree().get_first_node_in_group("inventory_ui")
 	if inv_ui:
 		inv_ui.set_active_hotbar(index)
 
-const GRASS_OVERLAY_TEXTURE := preload(
-	"res://Assets/TileSets/Home Made Assets/Exported/steppedgrass.png"
-)
-
-func _ready():
-	pass
-
-func _on_grass_detector_area_entered(_area: Area2D) -> void:
-	print("PLAYER: grass entered")
-	grass_overlap_count += 1
-
-func _on_grass_detector_area_exited(_area: Area2D) -> void:
-	print("PLAYER: grass exited")
-	grass_overlap_count = max(grass_overlap_count - 1, 0)
-
 func _is_holding_seeds() -> bool:
 	if inv == null:
 		return false
-
 	if active_hotbar_index < 0 or active_hotbar_index >= inv.slots.size():
 		return false
-
 	var slot := inv.slots[active_hotbar_index]
 	if slot == null or slot.item == null:
 		return false
-
-	return (
-		slot.item.item_type == InvItem.ItemType.CONSUMABLE
-		and slot.item.seed_crop_id != ""
-	)
+	return (slot.item.item_type == InvItem.ItemType.CONSUMABLE and slot.item.seed_crop_id != "")
 
 func _get_mouse_farm_cell() -> Dictionary:
 	var world := get_tree().get_first_node_in_group("world")
@@ -540,15 +460,10 @@ func _get_mouse_farm_cell() -> Dictionary:
 		var local_pos = tm.to_local(mouse_pos)
 		var cell = tm.local_to_map(local_pos)
 		var data = tm.get_cell_tile_data(cell)
-
 		if data == null:
 			continue
-
 		if data.has_custom_data("tile_type") and data.get_custom_data("tile_type") == "farm":
-			return {
-				"tilemap": tm,
-				"cell": cell
-			}
+			return {"tilemap": tm, "cell": cell}
 
 	return {}
 
@@ -556,12 +471,39 @@ func _is_within_plant_distance(tilemap: TileMapLayer, cell: Vector2i) -> bool:
 	var tile_pos := tilemap.to_global(tilemap.map_to_local(cell))
 	return global_position.distance_to(tile_pos) <= max_plant_distance
 
-
+# --------------------
+# INTERACTION AREA
+# --------------------
 func _on_interaction_area_body_entered(body: Node2D) -> void:
 	if body is NPC:
 		nearby_npc = body
-
+	elif body is CookingStation:
+		nearby_cooking_station = body
 
 func _on_interaction_area_body_exited(body: Node2D) -> void:
 	if nearby_npc == body:
 		nearby_npc = null
+	elif nearby_cooking_station == body:
+		nearby_cooking_station = null
+
+# --------------------
+# GRASS DETECTOR (restore your missing methods)
+# --------------------
+func _on_grass_detector_area_entered(_area: Area2D) -> void:
+	grass_overlap_count += 1
+
+func _on_grass_detector_area_exited(_area: Area2D) -> void:
+	grass_overlap_count = max(grass_overlap_count - 1, 0)
+
+# --------------------
+# INVENTORY
+# --------------------
+func _get_held_item() -> InvItem:
+	if inv == null:
+		return null
+	if active_hotbar_index < 0 or active_hotbar_index >= inv.slots.size():
+		return null
+	var slot := inv.slots[active_hotbar_index]
+	if slot == null or slot.item == null:
+		return null
+	return slot.item
