@@ -2825,14 +2825,13 @@ script = ExtResource("1_ovv4t")
 visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CameraBounds"]
-visible = false
 position = Vector2(8, -94.5)
 shape = SubResource("RectangleShape2D_qrwtm")
 
 [node name="Exit" type="Area2D" parent="."]
 script = ExtResource("1_k4prq")
 target_scene_path = "res://Scenes/Areas/Beach/BeachArea.tscn"
-target_spawn_name = "FromArks"
+target_spawn_name = "FromArk"
 
 [node name="ToBeach" type="CollisionShape2D" parent="Exit"]
 position = Vector2(8, 51)
