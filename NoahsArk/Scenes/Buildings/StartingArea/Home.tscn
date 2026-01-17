@@ -23,6 +23,7 @@ texture = ExtResource("6_k4x5e")
 max_stack = 1
 item_type = 1
 tool_type = "axe"
+description = "This is a base axe which you can find in the world of Mystrilia"
 metadata/_custom_type_script = "uid://dohcr3jcw0bv6"
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_rcqcf"]
