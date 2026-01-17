@@ -2,6 +2,7 @@ extends Panel
 
 @export var index: int = -1
 @export var hotkey_text: String = ""
+@export var is_chest_slot := false
 
 @onready var item_display: Sprite2D = $CenterContainer/Panel/ItemDisplay
 @onready var amount_text: Label = $CenterContainer/Panel/Label
@@ -63,7 +64,7 @@ func _on_left_click() -> void:
 	if inv_ui == null:
 		return
 
-	inv_ui.on_slot_clicked(index)
+	inv_ui.on_slot_clicked(index, self)
 
 func _on_right_click() -> void:
 	var inv_ui := get_tree().get_first_node_in_group("inventory_ui") as InventoryUI

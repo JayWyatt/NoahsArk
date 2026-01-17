@@ -123,6 +123,7 @@ interact={
 2d_physics/layer_3="TreeHitArea"
 2d_physics/layer_4="TreeCanopy"
 2d_physics/layer_5="TallGrass"
+2d_physics/layer_6="Interactable"
 
 [rendering]
 
