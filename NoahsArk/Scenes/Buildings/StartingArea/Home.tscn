@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=4 uid="uid://dvmiixnjbclps"]
+[gd_scene load_steps=34 format=4 uid="uid://dvmiixnjbclps"]
 
 [ext_resource type="Script" uid="uid://qvx3vjqark11" path="res://Scenes/Areas/StartingArea/StartingArea.gd" id="1_k4x5e"]
 [ext_resource type="Texture2D" uid="uid://cdbbqwxe0oi2q" path="res://Assets/TileSets/Home Made Assets/Exported/HouseInt.png" id="1_qk4ws"]
@@ -10,6 +10,9 @@
 [ext_resource type="Resource" uid="uid://mirlg0te7dns" path="res://Scenes/Skills/Fishing/Items/FishingRods/BeginnerRod.tres" id="7_j4lkw"]
 [ext_resource type="Texture2D" uid="uid://uywoi7fs2ra7" path="res://Assets/TileSets/Home Made Assets/Exported/FarmingHouseInt.png" id="8_l3hyo"]
 [ext_resource type="Resource" uid="uid://bmwi83cgv4iuv" path="res://Scenes/Skills/Farming/Items/Seeds/ChilliPacket.tres" id="8_r6b7a"]
+[ext_resource type="Resource" uid="uid://6sr0sidpq2bm" path="res://Scenes/Skills/Fishing/Items/FishingRods/AmateurRod.tres" id="8_ucbn6"]
+[ext_resource type="Resource" uid="uid://dd8a8n61fxajm" path="res://Scenes/Skills/Fishing/Items/FishingRods/ProRod.tres" id="9_oysor"]
+[ext_resource type="Resource" uid="uid://c3tcbllamcxdx" path="res://Scenes/Skills/Fishing/Items/FishingRods/MasterRod.tres" id="10_oysor"]
 [ext_resource type="Texture2D" uid="uid://mx4qe13a84d2" path="res://Assets/TileSets/Home Made Assets/Exported/FishingShopInt.png" id="10_r6b7a"]
 [ext_resource type="PackedScene" uid="uid://yh2by4eyqp7w" path="res://Scenes/Skills/Cooking/CookingScenes/CookingStation.tscn" id="12_rcqcf"]
 [ext_resource type="PackedScene" uid="uid://d3dq84fxcb1t1" path="res://Scenes/Functionalities/Inventory/InventoryScenes/Chest.tscn" id="13_wdh05"]
@@ -1966,15 +1969,27 @@ spawn_id = "BedSpawn"
 [node name="Items" type="Node2D" parent="."]
 
 [node name="Axe" parent="Items" instance=ExtResource("4_ukdna")]
-position = Vector2(-41, 76)
+position = Vector2(-39.63, 74.45)
 item = SubResource("Resource_s2keo")
 
 [node name="Rod" parent="Items" instance=ExtResource("4_ukdna")]
-position = Vector2(58, 93)
+position = Vector2(64.015, 77.955)
 item = ExtResource("7_j4lkw")
 
+[node name="Rod2" parent="Items" instance=ExtResource("4_ukdna")]
+position = Vector2(64.16, 103.49)
+item = ExtResource("8_ucbn6")
+
+[node name="Rod3" parent="Items" instance=ExtResource("4_ukdna")]
+position = Vector2(36.56, 104.65)
+item = ExtResource("9_oysor")
+
+[node name="Rod4" parent="Items" instance=ExtResource("4_ukdna")]
+position = Vector2(36.56, 77.455)
+item = ExtResource("10_oysor")
+
 [node name="ChilliPacket" parent="Items" instance=ExtResource("4_ukdna")]
-position = Vector2(12.725, 74.535)
+position = Vector2(-39.06, 104.505)
 item = ExtResource("8_r6b7a")
 amount = 100
 

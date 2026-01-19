@@ -4,4 +4,6 @@
 
 [resource]
 script = ExtResource("1_1jkwh")
+id = "scientist_intro"
+lines = Array[String](["I am so Smart I know DK is a poo poo head!"])
 metadata/_custom_type_script = "uid://cdlrjmdnh8xu3"

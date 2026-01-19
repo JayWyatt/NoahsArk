@@ -28,6 +28,9 @@ var nearby_cooking_station: CookingStation = null
 @onready var anim: AnimatedSprite2D = $AnimatedSprite2D
 @onready var interact_ray: RayCast2D = $InteractRay
 
+func _ready() -> void:
+	inv = preload("res://Scenes/Functionalities/Inventory/PlayerInventory.tres")
+
 # --------------------
 # MOVEMENT
 # --------------------
